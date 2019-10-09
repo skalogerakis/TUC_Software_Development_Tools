@@ -1,0 +1,32 @@
+#!/bin/bash
+# Loads this script into an array.
+
+text=( $(cat "$0") )
+for element in $(seq 0 $((${#text[@]} - 1)))
+do
+# ${#text[@]}
+#+ gives number of elements in the array.
+echo -n "${text[$element]}"
+# Each field of this script on a single line.
+echo -n " .. " # Seperate by " .. "
+done
+
+echo
+
+for ((i=0; i <= ${#text[@]} - 1; i++))
+do
+echo -n "${text[$i]}"
+# Each field of this script on a single line.
+echo -n " .. " # Seperate by " .. "
+done
+
+echo
+
+for i in `cat "${0}"`
+do
+echo -n "${i}"
+# Each field of this script on a single line.
+echo -n " .. " # Seperate by " .. "
+done
+
+echo

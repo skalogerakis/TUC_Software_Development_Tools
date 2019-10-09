@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo Input parameters = $#
+var="one two three four five"
+
+#split based on blank chars
+#assign to input parameters!!
+set -- $var
+
+echo Input parameters = $#
+#Now prints 5
+
+for koko 
+do
+  echo $koko 
+done
+

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# EPITREPEI ARI8MHTIKES PRA3EIS SE DEKADIKOUS
+a=100.19
+b=$(echo "scale=3; $a/100" | bc)
+# scale ka8orizei dekadika pshfia
+
+echo b = $b # b = 1.001
+
+#perform inequality tests
+A=0.04
+B=0.03
+let "comp=`echo $A-$B\>0 | bc`"
+echo $comp      # 1
+
+let "comp=`echo $B-$A\>0 | bc`"
+echo $comp      # 0
+

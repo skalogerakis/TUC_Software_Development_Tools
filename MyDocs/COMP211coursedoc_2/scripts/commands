@@ -1,0 +1,47 @@
+./parameters a b c d e f g h i j k
+
+./variables
+
+./arithmetics
+
+./myexpr
+
+./mybc
+
+./exitStatus
+
+./arithmeticTests
+
+./fileTests
+
+./math 5 '*' 3
+
+./forLoops
+
+./forLoops2 a b c d e f
+
+./breakCont
+
+./whileLoops
+
+./setProg
+
+./revstrs You are students
+
+./listRegFiles /etc
+
+./shiftCommand a b c d e f
+
+./factorial 10
+
+./dirSize /dev /usr /tmp
+
+./printContents
+
+./printContents2
+
+./shiftCommand a b c d e f
+
+./listAndCopy
+
+./countword testf.txt

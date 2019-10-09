@@ -1,0 +1,34 @@
+#!/bin/bash
+
+for koko in 1 2 3 4 5
+do
+  echo $koko 
+#Ektypwsh se diaforetikes grammes
+done
+
+for koko in "1 2 3 4 5"
+do
+  echo $koko 
+#Ektypwsh se mia grammh
+done
+
+NUMS="1 2 3 4 5"
+for koko in $NUMS
+do
+  echo $koko 
+#Ektypwsh se diaforetikes grammes
+done
+
+for koko in `echo $NUMS`
+do
+  echo $koko 
+#Ektypwsh se diaforetikes grammes
+done
+
+#Diples parentheseis
+for ((koko=1; koko <= 5; koko++)) 
+do
+  echo $koko 
+#Ektypwsh se diaforetikes grammes
+done
+

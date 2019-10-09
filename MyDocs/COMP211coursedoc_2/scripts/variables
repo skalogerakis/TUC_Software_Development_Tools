@@ -1,0 +1,24 @@
+#!/bin/bash    
+
+# POTE DEN BAZOUME TO '$' mprosta se mia metablhth?
+# Apanthsh: Otan ths ana8etoume timh
+
+#NEVER USE SPACES BEFORE AND AFTER = IN ASSIGNMENTS
+a=2334             # Integer - Only digits
+echo a             # a
+echo $a            # 2334
+
+hello="A B  C    D"
+echo $hello        # A B C D
+echo "$hello"      # A B  C   D
+# Ta dipla eisagwgika diathroun ta polla kena
+
+echo '$hello'      # $hello
+# Ta mona eisagwgika apenergopoioun thn anafora timhs me $
+
+echo -n "Enter \"b\" "       # Grafw lala koko
+read b
+echo "The value of \"b\" is now $b"
+# The value of "b" is now lala koko
+
+echo ${PATH}       # SWSTO - Metablhth periballontos PATH

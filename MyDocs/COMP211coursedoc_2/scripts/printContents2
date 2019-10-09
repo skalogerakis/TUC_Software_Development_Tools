@@ -1,0 +1,20 @@
+#!/bin/bash
+exec < "$0" #Take input from this file
+while read line
+do
+echo $line
+done
+
+#IFS is an internal variable specifying 
+#how bash separates fields, word boundaries
+#ALWAYS SAVE TO TEMP VARIABLE AND 
+#RESET AFTERWARDS
+OLDIFS="$IFS"
+IFS=$'\n'       #IFS=       also works
+for line in `cat "$0"` 
+do
+echo "$line"
+done
+IFS="$OLDIFS"
+
+exit 0

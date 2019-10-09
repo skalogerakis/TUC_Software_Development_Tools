@@ -1,0 +1,13 @@
+#!/bin/bash    
+
+# To $? epistrefei ton kwdiko e3odou ths teleytaias 
+# entolhs pou ektelesthke
+echo hello
+echo $?     # 0 : epitygxhmenh ektelesh
+
+lsdlsd      # agnwsth entolh
+echo $?     # 127 - genikws mh mhdenikh se sfalma
+
+echo
+
+exit 113    # Prepei na einai 0-255

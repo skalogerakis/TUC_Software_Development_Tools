@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# call with > 5 arguments
+
+echo Args1 = $*
+
+for str  # prints OK even with change
+do
+var=$1
+shift
+echo "var = $var and args = $*"
+
+done

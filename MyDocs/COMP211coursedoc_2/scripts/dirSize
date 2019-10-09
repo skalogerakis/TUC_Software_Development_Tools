@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# Usage: maxsize dirName1 ... dirNameN
+#
+max=0
+maxdir=$1
+dirs=$*
+for dir 
+do
+if [ ! -d $dir ]
+then
+echo "No directory with name $dir"
+else
+size=`du -sk $dir | cut -f1` 
+echo "Size of dir $dir is $size"
+if [ $size -ge $max ]
+then
+max=$size ; maxdir=$dir
+fi # if size...
+fi # if directory
+set - $dirs
+done
+echo "$maxdir $max"

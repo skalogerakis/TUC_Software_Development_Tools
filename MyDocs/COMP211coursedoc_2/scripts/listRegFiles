@@ -1,0 +1,23 @@
+#!/bin/bash
+
+OUTFILE=files.lst
+
+dirName=${1-`pwd`}
+echo DIRNAME = $dirName
+
+# To - dhlwnei default timh
+# An den dw8ei onoma katalogou
+# apo xrhsth
+
+echo Regular files in directory\
+      "$directory" > $OUTFILE
+
+# -type f means regular files
+for file in "$( find $dirName -type f )"
+do
+  echo "$file"
+done | sort >> "$OUTFILE"
+#      ^^^^^^^^^^^^^^^^^^
+# Anakateu8ynsh ta3inomhmenou stdout
+
+

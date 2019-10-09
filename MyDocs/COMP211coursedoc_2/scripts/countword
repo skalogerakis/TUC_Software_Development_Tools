@@ -1,0 +1,26 @@
+#!/bin/bash
+# Loads this script into an array.
+prev=""
+cons=1
+
+for str in `cat ${1}`
+do
+
+if [ "${str}" != "$prev" ]
+then
+if [ ! -z $prev ] 
+then
+echo "${prev}/${cons} "
+fi
+
+prev=${str}
+cons=1
+else
+let "cons = cons + 1"
+fi
+done
+
+if [ ! -z prev ]
+then
+echo "${prev}/${cons}"
+fi

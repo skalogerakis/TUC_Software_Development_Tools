@@ -1,0 +1,18 @@
+#!/bin/sh
+#search for .h files in a
+#directory
+#For each file it lists
+#the first 3 lines in the file
+#myout
+
+FILE_LIST=`ls /usr/include/c++/4.0.3/ext/*.h`
+touch myout
+rm myout
+touch myout
+
+for file in ${FILE_LIST}
+do
+echo FILE = ${file}
+    head -3 "${file}" >> myout
+done
+

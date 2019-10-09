@@ -1,0 +1,14 @@
+#!/bin/bash    
+
+a=2334           
+let b=a+3  # isxyei kai to b=$a+3
+let "c = a+3"
+let "d = a+ 3"
+
+z=$(($a+3))
+y=$((a+3))  # Epishs swsto
+
+k=`expr $a + 3` # Xrhsh entolhs expr
+
+echo $a $b $c $d $k $z $y
+#2334 2337 2337 2337 2337 2337 2337

@@ -1,0 +1,26 @@
+#!/bin/bash
+
+#Xwris lista timwn epe3ergazetai
+#tis parametrous tou programmatos
+for koko 
+do
+  echo -n $koko 
+done
+echo
+
+#how to parse some arguments
+#from $2 until the end
+for j in ${*:2}
+do
+  echo -n $j
+done
+echo
+
+#$2 to $4
+#start at position 2 and use
+#3 arguments
+for j in ${*:2:3}
+do
+  echo -n $j
+done
+echo

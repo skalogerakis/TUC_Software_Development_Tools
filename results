@@ -1,0 +1,52 @@
+#!/bin/bash
+
+#Use double quotes so that we will not refer only to literal values
+regex="^(([A-Za-z][0-9]*)+)\-(([A-Za-z][0-9]*)+)\:((0|[1-9]+)-(0|[1-9]+))$"
+arr_counter=0;
+
+#Init declaration of empty array
+declare -a teamsArr=()
+
+
+#TODO check that we have only one parameter as input
+exec < $1 #Take input from this file
+while read line
+do
+
+	#echo $line
+	# =~ Operand is used to match regular expression used above.
+	# When it is used, the string to the right of the operator is considered an extended regular expression and matched accordingly
+	#Source https://linux.die.net/man/1/bash
+	if [[ $line =~ $regex ]] 
+	then
+	    echo "Valid data" $line
+	    #If the latest [[]]-expression matched the string, the matched part of the string is stored in the BASH_REMATCH array.
+	    #If the expression did not match, the exit status was 1 and the array is empty.
+	    # BASH_REMATCH[@] shows the whole array
+	    # In our case echo BASH_REMATCH[@] = Portugal-Greece:1-2 Portugal l Greece e 1-2 1 2
+	    # We extract the information we need just by accessing BASH_REMATCH as a typical array ex. Portugal is in BASH_REMATCH[1] 
+	    echo ${BASH_REMATCH[@]}
+	    
+	    teamsArr+=("${BASH_REMATCH[1]}")
+	    echo BS1 ${BASH_REMATCH[1]}
+	    echo BS3 ${BASH_REMATCH[3]}
+	    echo BS6 ${BASH_REMATCH[6]}
+	    echo BS7 ${BASH_REMATCH[7]}
+	    # echo HEY OLD ${arr[$arr_counter]}
+
+	    ##TODO add flags and iterate through array
+	    for((i=0; i<=${#arr[@]}-1;i++))
+	    do
+	    	echo Hi $i
+	    done
+
+
+
+	    arr_counter=$((arr_counter+1))
+	    echo $arr_counter
+	    # echo HEY ${arr[$arr_counter]}
+	    echo HEY ${teamsArr[@]}
+	else
+	    echo "Invalid data" $line
+	fi
+done 

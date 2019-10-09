@@ -1,0 +1,19 @@
+#!/bin/bash    
+
+# PROSOXH: APAITOYNTAI KENA
+a=`expr 3 + 5`      # 8           
+a=`expr 5 % 3`      # 2           
+a=`expr 5 / 3`      # 1           
+a=`expr 1 / 0` # Epistrefei sfalma           
+a=`expr 5 \* 3`     # 15           
+# Me to expr, ston pollaplasiasmo \* 
+a=`expr $a + 5` # Idio me let a=a+5           
+
+string=EnaMegaloString
+position=4
+length=6
+z=`expr substr $string $position $length`
+#E3agei length xarakthres apo to string.
+#3ekinaei apo th 8esh position
+
+echo $z  # Megalo

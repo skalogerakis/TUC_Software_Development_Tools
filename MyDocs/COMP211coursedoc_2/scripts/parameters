@@ -1,0 +1,19 @@
+#!/bin/bash    
+# all scripts start like this
+
+#This is a comment
+
+#will give 11 arguments to this program 
+# a b c d e f g h i j k
+
+echo Number of input parameters = $#   # 11
+echo Program Name = $0                 # ./parameters
+
+echo Other Parameters = $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11
+#Other Parameters = a b c d e f g h i a0 a1
+
+echo Other Parameters = $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11}
+#Other Parameters = a b c d e f g h i j k
+
+echo All Arguments = $*
+#All Arguments = a b c d e f g h i j k
