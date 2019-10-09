@@ -4,8 +4,12 @@
 regex="^(([A-Za-z][0-9]*)+)\-(([A-Za-z][0-9]*)+)\:((0|[1-9]+)-(0|[1-9]+))$"
 arr_counter=0;
 
+
 #Init declaration of empty array
 declare -a teamsArr=()
+declare -a goalsForArr=()
+declare -a goalsAgainstArr=()
+declare -a ScoreArr=()
 
 
 #TODO check that we have only one parameter as input
@@ -19,33 +23,102 @@ do
 	#Source https://linux.die.net/man/1/bash
 	if [[ $line =~ $regex ]] 
 	then
-	    echo "Valid data" $line
+	    #echo "Valid data" $line
 	    #If the latest [[]]-expression matched the string, the matched part of the string is stored in the BASH_REMATCH array.
 	    #If the expression did not match, the exit status was 1 and the array is empty.
 	    # BASH_REMATCH[@] shows the whole array
 	    # In our case echo BASH_REMATCH[@] = Portugal-Greece:1-2 Portugal l Greece e 1-2 1 2
 	    # We extract the information we need just by accessing BASH_REMATCH as a typical array ex. Portugal is in BASH_REMATCH[1] 
-	    echo ${BASH_REMATCH[@]}
+	    #echo ${BASH_REMATCH[@]}
+
+	    team1WrEn=1
+	    team2WrEn=1
 	    
-	    teamsArr+=("${BASH_REMATCH[1]}")
-	    echo BS1 ${BASH_REMATCH[1]}
-	    echo BS3 ${BASH_REMATCH[3]}
-	    echo BS6 ${BASH_REMATCH[6]}
-	    echo BS7 ${BASH_REMATCH[7]}
+	    team1=${BASH_REMATCH[1]}
+	    team2=${BASH_REMATCH[3]}
+	    scoreTeam1=${BASH_REMATCH[6]}
+	    scoreTeam2=${BASH_REMATCH[7]}
+
+	    team1Points=0
+	    team2Points=0
+	    
+	    echo team1 $team1
+	    echo team2 $team2
+	    echo scoreTeam1 $scoreTeam1
+	    echo scoreTeam2 $scoreTeam2
 	    # echo HEY OLD ${arr[$arr_counter]}
 
+	    if [ "$scoreTeam1" -gt "$scoreTeam2" ]
+	    	then
+	    		# echo TEAM 1 WON "$scoreTeam1"
+	    		team1Points=3
+	    elif [ "$scoreTeam2" -gt "$scoreTeam1" ]
+	    	then
+	    		# echo TEAM 2 WON "$scoreTeam2"
+	    		team2Points=3
+	    else
+	    	# echo DRAW
+	    	team1Points=1
+	    	team2Points=1
+	    fi
+
+
 	    ##TODO add flags and iterate through array
-	    for((i=0; i<=${#arr[@]}-1;i++))
+	    for((i=0; i<=${#teamsArr[@]}-1;i++))
 	    do
-	    	echo Hi $i
+	    	# echo TETST "${teamsArr[$i]}"
+	    	if [ "$team1" == "${teamsArr[$i]}" ]
+		    	then
+		    		echo Team Exists $i "${teamsArr[$i]}"
+		    		goalsForArr[$i]=$((goalsForArr[$i]+$scoreTeam1))
+		    		goalsAgainstArr[$i]=$((goalsAgainstArr[$i]+$scoreTeam2))
+		    		ScoreArr[$i]=$((ScoreArr[$i]+$team1Points))	
+
+		    		team1WrEn=0
+	    	fi
+	    	if [ "$team2" == "${teamsArr[$i]}" ]
+		    	then
+		    		echo Team Exists $i "${teamsArr[$i]}"
+		    		goalsForArr[$i]=$((goalsForArr[$i]+$scoreTeam2))
+		    		goalsAgainstArr[$i]=$((goalsAgainstArr[$i]+$scoreTeam1))
+		    		ScoreArr[$i]=$((ScoreArr[$i]+$team2Points))	
+
+		    		team2WrEn=0
+	    	fi
 	    done
 
+	    #In case thare is already the referenced team in our array don't add it again
+	    if [ "$team1WrEn" -eq "1" ]
+		    then
+		    	# echo Team Exists $i "${teamsArr[$i]}"
+		    	teamsArr+=("$team1")
+		    	goalsForArr+=("$scoreTeam1")
+		    	goalsAgainstArr+=("$scoreTeam2")
+		    	ScoreArr+=("$team1Points")
+		    	echo Team added "$team1"
+	    fi
+
+	    if [ "$team2WrEn" -eq "1" ]
+		    then
+		    	# echo Team Exists $i "${teamsArr[$i]}"
+		    	teamsArr+=("$team2")
+		    	goalsForArr+=("$scoreTeam2")
+		    	goalsAgainstArr+=("$scoreTeam1")
+		    	ScoreArr+=("$team2Points")
+		    	echo Team added "$team2"
+	    fi
+	    # teamsArr+=("$team1")
 
 
-	    arr_counter=$((arr_counter+1))
-	    echo $arr_counter
+
+	    # arr_counter=$((arr_counter+1))
+	    # echo $arr_counter
 	    # echo HEY ${arr[$arr_counter]}
-	    echo HEY ${teamsArr[@]}
+	    echo ALL TEAMS ${teamsArr[@]}
+	    echo TEAMS GOAL FOR ${goalsForArr[@]}
+	    echo TEAMS GOAL Against ${goalsAgainstArr[@]}
+	    echo TEAMS SCORE ${ScoreArr[@]}
+	    printf "\n\n"
 	else
 	    echo "Invalid data" $line
 	fi
