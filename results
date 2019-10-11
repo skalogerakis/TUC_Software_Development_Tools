@@ -131,91 +131,20 @@ done
 
 for((i=0; i<=${#teamsArr[@]}-1;i++))
 	do
-		echo SHOW THE TEAMS "${ScoreArr[i]}${teamsArr[i]}"
-		sortingArr+=("${ScoreArr[i]}${teamsArr[i]}") 	 
-done
+		# echo -e  "${teamsArr[i]}\t${ScoreArr[i]}\t${goalsForArr[i]}"-"${goalsAgainstArr[i]}" 
+		printf "%s\t%s\t%s-%s\n" "${teamsArr[i]}" "${ScoreArr[i]}" "${goalsForArr[i]}" "${goalsAgainstArr[i]}" | expand -t 30,40
+		# sortingArr+=("${ScoreArr[i]}${teamsArr[i]}") 	 
+done > fileTester
 
-	echo SORTING ${sortingArr[@]}
+# sort -k2,2r -k1,1 fileTester
 
-#sorts number 0,1,2,3
-# printf 'YOYOOO %s\n' "${sortingArr[@]}" | sort -r
-# # arrtest=($(echo ${sortingArr[*]} | sort -n)) 
-# # arrtest=($(echo ${sortingArr[@]}| sort -r))
-# arrtest=($(echo ${sortingArr[*]}| tr " " "\n" | sort -r))
-# echo FINAL ${arrtest[*]}
-# tester1="4Spain"
-# tester2="4Greece"
+linecount=1
 
-# first1=${tester1:0:1}
-# first2=${tester1:0:1}
-
-# echo $first1 $first2
-
-
-
-
-# if [ "$tester1" \> "$tester2" ]
-# 	then
-# 	   echo TEAM 1 HIGHERSCORE "$tester1"
-# 	else
-# 	 	echo TEAM 2 HIGHERSCORE "$tester2"
-# 	fi
-
-# printf "\n\n\n\n\n"
-
-
-echo "Array in original order"
-echo BEFORE ${sortingArr[*]} 
+# awk '{print ++linecount $0}' fileTester
  
-#FIRST TRY.TESTED AND WORKS
+sort -k2,2r -k1,1 fileTester > fileTester2 
+awk -v var="$linecount" '{print var++ "\t" $0} ' fileTester2 
 
-# for (( i = 0; i < ${#sortingArr[@]} ; i++ ))
-# do
-# 	for (( j = $i; j < ${#sortingArr[@]}; j++ ))
-# 		do
-# 			# echo HHHH "${sortingArr[$i]:1:${#sortingArr[$i]} }"
-# 			if [ "${sortingArr[$i]:0:1}" \< "${sortingArr[$j]:0:1}" ]
-# 			then
-# 			t=${sortingArr[$i]}
-# 			sortingArr[$i]=${sortingArr[$j]}
-# 			sortingArr[$j]=$t
-# 			elif [ "${sortingArr[$i]:0:1}" = "${sortingArr[$j]:0:1}" ]
-# 				then
-# 					echo match "${sortingArr[$i]}" "${sortingArr[$j]}"
-# 					if [ "${sortingArr[$i]:1:${#sortingArr[$i]}}" \> "${sortingArr[$j]:1:${#sortingArr[$j]} }" ]
-# 					then
-# 						t=${sortingArr[$i]}
-# 						sortingArr[$i]=${sortingArr[$j]}
-# 						sortingArr[$j]=$t
-# 					fi
-# 			fi
-# 		done
-# done
- 
-#SECOND ATTEMPT. NEEDS TESTING
-# Performing Bubble sort  
-for (( i = 0; i < ${#sortingArr[@]} ; i++ ))
-do
-	for (( j = $i; j < ${#sortingArr[@]}-i-1; j++ ))
-		do
-			# echo HHHH "${sortingArr[$i]:1:${#sortingArr[$i]} }"
-			if [ "${sortingArr[$j]:0:1}" \< "${sortingArr[$((j+1))]:0:1}" ]
-			then
-			t=${sortingArr[$j]}
-			sortingArr[$j]=${sortingArr[$((j+1))]}
-			sortingArr[$((j+1))]=$t
-			elif [ "${sortingArr[$j]:0:1}" = "${sortingArr[$((j+1))]:0:1}" ]
-				then
-					# echo match "${sortingArr[$i]}" "${sortingArr[$j]}"
-					if [ "${sortingArr[$j]:1:${#sortingArr[$j]}}" \> "${sortingArr[$((j+1))]:1:${#sortingArr[$((j+1))]} }" ]
-					then
-						t=${sortingArr[$j]}
-						sortingArr[$j]=${sortingArr[$((j+1))]}
-						sortingArr[$((j+1))]=$t
-					fi
-			fi
-		done
-done  
-echo "Array in sorted order :"
-echo ${sortingArr[*]}
 
+rm fileTester
+rm fileTester2
