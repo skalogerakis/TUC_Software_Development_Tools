@@ -5,7 +5,15 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 #Use double quotes so that we will not refer only to literal values
-regex="^(([A-Za-z][0-9]*)+)\-(([A-Za-z][0-9]*)+)\:((0|[1-9]+)-(0|[1-9]+))$"
+#Initial try regex="^(([A-Za-z][0-9]*)+)\-(([A-Za-z][0-9]*)+)\:((0|[1-9]+)-(0|[1-9]+))$"
+#Second try. More strict way to define regular expression
+#Updated regex covers the following:
+#-Spaces in a string(ex. team Man Utd)
+#-No empty string "" allowed
+#-No string that leads and / or trails with spaces, "   Hello World  ". allowed
+#-No string comprised entirely of spaces, "      ".
+#-Team name may contain dot(.) in the middle of the string but not in the end or start
+regex="^([a-zA-Z0-9][a-zA-Z0-9. ]*[a-zA-Z0-9])\-([a-zA-Z0-9][a-zA-Z0-9. ]*[a-zA-Z0-9])\:((0|[1-9]+)-(0|[1-9]+))$"
 
 
 #Init declaration of all arrays needed as empty
@@ -47,9 +55,9 @@ do
 	    #echo ${BASH_REMATCH[@]}
 	    
 	    team1=${BASH_REMATCH[1]}
-	    team2=${BASH_REMATCH[3]}
-	    scoreTeam1=${BASH_REMATCH[6]}
-	    scoreTeam2=${BASH_REMATCH[7]}
+	    team2=${BASH_REMATCH[2]}
+	    scoreTeam1=${BASH_REMATCH[4]}
+	    scoreTeam2=${BASH_REMATCH[5]}
 
 	    #Our flag in case we find a new team and we need to add in our array. In case this value equals 1 then the team is new
 	    team1WrEn=1
@@ -72,11 +80,12 @@ do
 	    fi
 
 	    #Scan all the existing team if our team already exists. In that case dont make a new entry
-	    #Just update the old one
+	    #Case insensitive. Convert everything to lowercase to compare.
+	    #The printed format is followed by the first time each team is met in our scores
 	    for((i=0; i<=${#teamsArr[@]}-1;i++))
 	    do
-	    
-	    	if [ "$team1" == "${teamsArr[$i]}" ]
+	    	#Convert everything to lowercase
+	    	if [ "${team1,,}" == "${teamsArr[$i],,}" ]
 		    	then
 		    
 		    		goalsForArr[$i]=$((goalsForArr[$i]+$scoreTeam1))
@@ -84,7 +93,7 @@ do
 		    		ScoreArr[$i]=$((ScoreArr[$i]+$team1Points))	
 		    		team1WrEn=0
 	    	fi
-	    	if [ "$team2" == "${teamsArr[$i]}" ]
+	    	if [ "${team2,,}" == "${teamsArr[$i],,}" ]
 		    	then
 		    		
 		    		goalsForArr[$i]=$((goalsForArr[$i]+$scoreTeam2))
@@ -123,14 +132,17 @@ done
 for((i=0; i<=${#teamsArr[@]}-1;i++))
 	do
 		#Tab delimetered as requested
-		printf "%s\t%s\t%s-%s\n" "${teamsArr[i]}" "${ScoreArr[i]}" "${goalsForArr[i]}" "${goalsAgainstArr[i]}" #| expand -t 30,40	 
+		#UPDATED: Added comma to delimeter columns in order to cover spaces
+		printf "%s\t,%s\t,%s-%s\n" "${teamsArr[i]}" "${ScoreArr[i]}" "${goalsForArr[i]}" "${goalsAgainstArr[i]}" #| expand -t 30,40	 
+
 done > tempfile
 
 linecount=1
 
 #Sort our temporary file. First sort based on second column of temp file which is final score(reverse sort in that case).
 #If final score is the same  sort by team name
-sort -k2,2r -k1,1 tempfile > tempfile2 
+#-t arguments specifies field seperator.In our case it is comma(,)
+sort -t ',' -k2,2r -k1,1  tempfile | tr , ' ' > tempfile2 
 
 #print everything as requested on a specific format. Also add counter based on final position on board
 awk -v var="$linecount" '{print var++ ".\t" $0} ' tempfile2 

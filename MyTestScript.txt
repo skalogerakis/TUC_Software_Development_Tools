@@ -1,9 +1,5 @@
-Portugal-Greece:1-2
-Greece-Spain:7-0
-Portugal-Portugalerwef:3-2
+Portugal-Greece:4-2
 Spain-Netherlands:5-4
-Spain-Portugalerwefsefsefsef:2-1
-Netherlands-Portugal:0-0
-SNetherla-Portugal:1-12
-Que-Ase:1-1
-/Portugalerwef-Greece:3-2
+Greece-Spain:7-0
+Portugal-Spain:3-2
+Man Utd-Netherlands:3-0
