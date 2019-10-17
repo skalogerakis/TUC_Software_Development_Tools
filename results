@@ -123,6 +123,12 @@ do
 	    fi
 
 	else
+		#if there is any empty line in the read file dont print error message. Just ignore
+		if [ -z "$line" ]
+		then
+			#echo -e "${RED}Empty Line ${NC}"
+			continue
+		fi
 		#Wrong Data entry
 	    echo -e "${RED}Invalid data $line ${NC}"
 	fi
