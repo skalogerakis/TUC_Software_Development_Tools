@@ -13,7 +13,7 @@ NC='\033[0m'
 #-No string that leads and / or trails with spaces, "   Hello World  ". allowed
 #-No string comprised entirely of spaces, "      ".
 #-Team name may contain dot(.) in the middle of the string but not in the end or start
-regex="^([a-zA-Z0-9][a-zA-Z0-9. ]*[a-zA-Z0-9])\-([a-zA-Z0-9][a-zA-Z0-9. ]*[a-zA-Z0-9])\:((0|[1-9]+)-(0|[1-9]+))$"
+regex="^([a-zA-Z0-9][a-zA-Z0-9.& ]*[a-zA-Z0-9])\-([a-zA-Z0-9][a-zA-Z0-9.& ]*[a-zA-Z0-9])\:((0|[1-9]+)-(0|[1-9]+))$"
 
 
 #Init declaration of all arrays needed as empty
@@ -37,7 +37,8 @@ fi
 
 
 exec < $1 #Take input from this file
-while read line #Read the whole file
+while read line || [ -n "$line" ] #Read the whole file including the last line if no new line character is found
+# https://stackoverflow.com/questions/12916352/shell-script-read-missing-last-line/12919766#12919766
 do
 
 	#echo $line
