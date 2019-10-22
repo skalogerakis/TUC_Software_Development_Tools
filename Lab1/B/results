@@ -55,8 +55,9 @@ do
 	    #If the latest [[]]-expression matched the string, the matched part of the string is stored in the BASH_REMATCH array.
 	    #If the expression did not match, the exit status was 1 and the array is empty.
 	    # BASH_REMATCH[@] shows the whole array
-	    # In our case echo BASH_REMATCH[@] = Portugal-Greece:1-2 Portugal l Greece e 1-2 1 2
+	    # In our case echo BASH_REMATCH[@] = Portugal-Greece:1-2 Portugal Greece 1-2 1 2
 	    # We extract the information we need just by accessing BASH_REMATCH as a typical array ex. Portugal is in BASH_REMATCH[1] 
+	    #http://molk.ch/tips/gnu/bash/rematch.html
 	    #echo ${BASH_REMATCH[@]}
 	    
 	    team1=${BASH_REMATCH[1]}
