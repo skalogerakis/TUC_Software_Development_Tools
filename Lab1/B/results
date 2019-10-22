@@ -1,0 +1,163 @@
+#!/bin/bash
+
+#Put some color in your life. Used to print some errors
+RED='\033[0;31m'
+NC='\033[0m'
+
+#Use double quotes so that we will not refer only to literal values
+#Initial try regex="^(([A-Za-z][0-9]*)+)\-(([A-Za-z][0-9]*)+)\:((0|[1-9]+)-(0|[1-9]+))$"
+#Second try. More strict way to define regular expression
+#Updated regex covers the following:
+#-Latin Characters
+#-Spaces in a string(ex. team Man Utd)
+#-No empty string "" allowed
+#-No string that leads and / or trails with spaces, "   Hello World  ". allowed
+#-No string comprised entirely of spaces, "      ".
+#-Team name may contain dot(.) in the middle of the string but not in the end or start
+regex="^([a-zA-Z0-9][a-zA-Z0-9.& ]*[a-zA-Z0-9])\-([a-zA-Z0-9][a-zA-Z0-9.& ]*[a-zA-Z0-9])\:((0|[1-9]+)-(0|[1-9]+))$"
+
+
+#Init declaration of all arrays needed as empty
+declare -a teamsArr=()
+declare -a goalsForArr=()
+declare -a goalsAgainstArr=()
+declare -a ScoreArr=()
+
+#Validity check. Make sure that the file exists and that there is only one parameter as input
+if [ $# -ne 1 ]
+  then
+    echo -e "${RED}Please give only one filename as paramter${NC}"
+	exit -1
+fi
+
+if [ ! -e $1 ]    # exists file
+then
+	echo -e "${RED}Required file does not exist. Please check your input file${NC}"
+	exit -1
+fi
+
+
+exec < $1 #Take input from this file
+counter=0
+while read line || [ -n "$line" ] #Read the whole file including the last line if no new line character is found
+# https://stackoverflow.com/questions/12916352/shell-script-read-missing-last-line/12919766#12919766
+do	
+
+	counter=$(($counter + 1))
+
+	# echo $line
+	# =~ Operand is used to match regular expression used above.
+	# When it is used, the string to the right of the operator is considered an extended regular expression and matched accordingly
+	#Source https://linux.die.net/man/1/bash
+	if [[ $line =~ $regex ]] 
+	then
+	    #echo "Valid data" $line
+	    #If the latest [[]]-expression matched the string, the matched part of the string is stored in the BASH_REMATCH array.
+	    #If the expression did not match, the exit status was 1 and the array is empty.
+	    # BASH_REMATCH[@] shows the whole array
+	    # In our case echo BASH_REMATCH[@] = Portugal-Greece:1-2 Portugal l Greece e 1-2 1 2
+	    # We extract the information we need just by accessing BASH_REMATCH as a typical array ex. Portugal is in BASH_REMATCH[1] 
+	    #echo ${BASH_REMATCH[@]}
+	    
+	    team1=${BASH_REMATCH[1]}
+	    team2=${BASH_REMATCH[2]}
+	    scoreTeam1=${BASH_REMATCH[4]}
+	    scoreTeam2=${BASH_REMATCH[5]}
+
+	    #Our flag in case we find a new team and we need to add in our array. In case this value equals 1 then the team is new
+	    team1WrEn=1
+	    team2WrEn=1
+
+	    team1Points=0
+	    team2Points=0
+	    
+	    #Calculate points that every team acquired after every fixture
+	    if [ "$scoreTeam1" -gt "$scoreTeam2" ]
+	    	then
+	    		team1Points=3
+	    elif [ "$scoreTeam2" -gt "$scoreTeam1" ]
+	    	then
+	    		team2Points=3
+	    else
+
+	    	team1Points=1
+	    	team2Points=1
+	    fi
+
+	    #Scan all the existing team if our team already exists. In that case dont make a new entry
+	    #Case insensitive. Convert everything to lowercase to compare.
+	    #The printed format is followed by the first time each team is met in our scores
+	    for((i=0; i<=${#teamsArr[@]}-1;i++))
+	    do
+	    	#Convert everything to lowercase
+	    	if [ "${team1,,}" == "${teamsArr[$i],,}" ]
+		    	then
+		    
+		    		goalsForArr[$i]=$((goalsForArr[$i]+$scoreTeam1))
+		    		goalsAgainstArr[$i]=$((goalsAgainstArr[$i]+$scoreTeam2))
+		    		ScoreArr[$i]=$((ScoreArr[$i]+$team1Points))	
+		    		team1WrEn=0
+	    	fi
+	    	if [ "${team2,,}" == "${teamsArr[$i],,}" ]
+		    	then
+		    		
+		    		goalsForArr[$i]=$((goalsForArr[$i]+$scoreTeam2))
+		    		goalsAgainstArr[$i]=$((goalsAgainstArr[$i]+$scoreTeam1))
+		    		ScoreArr[$i]=$((ScoreArr[$i]+$team2Points))	
+		    		team2WrEn=0
+	    	fi
+	    done
+
+	    #In case thare is already the referenced team in our array don't add it again
+	    if [ "$team1WrEn" -eq "1" ]
+		    then
+		    	
+		    	teamsArr+=("$team1")
+		    	goalsForArr+=("$scoreTeam1")
+		    	goalsAgainstArr+=("$scoreTeam2")
+		    	ScoreArr+=("$team1Points")
+	    fi
+
+	    if [ "$team2WrEn" -eq "1" ]
+		    then
+
+		    	teamsArr+=("$team2")
+		    	goalsForArr+=("$scoreTeam2")
+		    	goalsAgainstArr+=("$scoreTeam1")
+		    	ScoreArr+=("$team2Points")
+	    fi
+
+	else
+		#if there is any empty line in the read file dont print error message. Just ignore
+		if [ -z "$line" ]
+		then
+			echo -e "${RED}Empty Line ${NC}"
+			continue
+		fi
+		#Wrong Data entry
+	    echo -e "${RED}$1:$counter: Input file syntax error: $line ${NC}"
+	fi
+done
+
+#Write all data unsorted in a temporary file
+for((i=0; i<=${#teamsArr[@]}-1;i++))
+	do
+		#Tab delimetered as requested
+		#UPDATED: Added comma to delimeter columns in order to cover spaces
+		printf "%s\t,%s\t,%s-%s\n" "${teamsArr[i]}" "${ScoreArr[i]}" "${goalsForArr[i]}" "${goalsAgainstArr[i]}" #| expand -t 30,40	 
+
+done > tempfile
+
+linecount=1
+
+#Sort our temporary file. First sort based on second column of temp file which is final score(reverse sort in that case).
+#If final score is the same  sort by team name
+#-t arguments specifies field seperator.In our case it is comma(,)
+sort -t ',' -k2,2r -k1,1  tempfile | tr , ' ' > tempfile2 
+
+#print everything as requested on a specific format. Also add counter based on final position on board
+awk -v var="$linecount" '{print var++ ".\t" $0} ' tempfile2 
+
+#remove all temporary files as requested
+rm tempfile
+rm tempfile2
