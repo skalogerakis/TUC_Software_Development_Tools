@@ -8,6 +8,7 @@ NC='\033[0m'
 #Initial try regex="^(([A-Za-z][0-9]*)+)\-(([A-Za-z][0-9]*)+)\:((0|[1-9]+)-(0|[1-9]+))$"
 #Second try. More strict way to define regular expression
 #Updated regex covers the following:
+#-Latin Characters
 #-Spaces in a string(ex. team Man Utd)
 #-No empty string "" allowed
 #-No string that leads and / or trails with spaces, "   Hello World  ". allowed
@@ -127,7 +128,7 @@ do
 		#if there is any empty line in the read file dont print error message. Just ignore
 		if [ -z "$line" ]
 		then
-			#echo -e "${RED}Empty Line ${NC}"
+			echo -e "${RED}Empty Line ${NC}"
 			continue
 		fi
 		#Wrong Data entry
