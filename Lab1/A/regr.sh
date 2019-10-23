@@ -71,7 +71,7 @@ function regr() {
     sum_x2=`sum_vector_pow2 _Vector_X`
 
     # regular expresion for sed
-    sed_regex='s|^\.|0.|;s|([0-9]+\.[0-9]{2})[0-9]*|\1|;s|(\.[0-9])$|\10|;s|\.0{2}||'
+    sed_regex='s|^(-*)\.|\10.|;s|([0-9]+\.[0-9]{2})[0-9]*|\1|;s|(\.[0-9])$|\10|;s|\.0{2}||'
 
     # calculate a
     a_num=`echo "scale=9; ($length * $sum_xy) - ($sum_x * $sum_y)" | bc`
@@ -118,17 +118,22 @@ function regr_file() {
     
     Vector_X=()
     Vector_Y=()
-    # https://stackoverflow.com/questions/10929453/read-a-file-line-by-line-assigning-the-value-to-a-variable
-    while IFS= read -r line || [[ -n "$line" ]]; do
-        # https://stackoverflow.com/questions/918886/how-do-i-split-a-string-on-a-delimiter-in-bash
+    counter=0
+
+    # Set IFS to none, so no splitting of line
+    # [[ -n $line ]] prevents the last line from being ignored if it doesn't end with a \n 
+    while IFS='' read -r line || [[ -n "$line" ]]; do
+        # Split line
         arrLine=(${line//:/ })
 
-        regex='^[0-9]*(\.[0-9]+)?$'
+        # Check if values are numbers
+        regex='^[0-9]+(\.[0-9]+)?$'
         if ! [[ ${arrLine[0]} =~ $regex ]] || ! [[ ${arrLine[1]} =~ $regex ]] ; then
-            echo $RED "\bError: Incorrect file syntax" $NC
+            printf "%s%s:%s:Input file syntax error%s"   $RED $file $counter $NC
             return 1
         fi
-
+        
+        # Append values to vectors
         Vector_X+=(${arrLine[0]})
         Vector_Y+=(${arrLine[1]})
     done < "$file"
