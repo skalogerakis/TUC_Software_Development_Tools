@@ -1,4 +1,4 @@
- #!/usr/bin/env bash
+#!/bin/bash
 
 # colors
 RED='\033[0;31m'
@@ -132,7 +132,7 @@ function regr_file() {
             printf "%s%s:%s:Input file syntax error%s"   $RED $file $counter $NC
             return 1
         fi
-        
+        counter=$(($counter + 1))
         # Append values to vectors
         Vector_X+=(${arrLine[0]})
         Vector_Y+=(${arrLine[1]})
