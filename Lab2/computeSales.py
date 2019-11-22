@@ -1,61 +1,6 @@
 import sys #sys.exit to quit application
 import re
 
-def main():
-    menu()
-
-
-# function that processes all data from new file
-def new_file():
-    print("New file func")
-
-
-# Function that prints statistics for a specific product
-def product_stat():
-    print("Product stat")
-
-
-# Function that prints statistics for a specific AFM
-def afm_stat():
-    print("AFM stat")
-
-
-# Choose the right function given user input
-def menu_choice(choice):
-    if choice == "1":
-        new_file()
-    elif choice == "2":
-        product_stat()
-    elif choice == "3":
-        afm_stat()
-    elif choice == "4":
-        # Exit choice
-        sys.exit(9)
-    else:
-        print("Invalid menu choice")
-    # ????? Prints menu repeatedly
-    menu()
-
-
-# Our main menu
-def menu():
-    print()
-    print(
-        '''Give your preference:
-        1: Read new input file
-        2: Print statistics for a specific product
-        3: Print statistics for a specific AFM
-        4: Exit the program
-        '''
-    )
-
-    choice = input()
-    menu_choice(choice)
-
-
-def printm(m):
-    for i in m:
-        print(i)
 
 class fileReader:
     '''
@@ -124,16 +69,17 @@ class fileReader:
         data = {}
         sum = 0
         for match in DataMatch[1]:
+            name = match[0].lower()
             flmatch = list(map(lambda x: float(x), match[1:]))
             if flmatch[2] != round(flmatch[0]*flmatch[1],2): return None
-            sum+=flmatch[2];
-            if data.get(match[0]):
-                data[match[0]][0] += flmatch[0]
-                data[match[0]][2] += flmatch[2]
+            sum+=flmatch[2]
+            if data.get(name):
+                data[name][0] += flmatch[0]
+                data[name][2] += flmatch[2]
             else:
-                data[match[0]] = flmatch
+                data[name] = flmatch
         if DataMatch[2] != sum : return None
-        DataMatch[1]=data;
+        DataMatch[1]=data
         return DataMatch
 
     def next(self,step = 1000):
@@ -146,12 +92,70 @@ class fileReader:
         if matches.__len__()==0:return None;
         return list(filter(None, list(map(lambda x: self.__parseDataMatch(self.__parseMatch(x)), matches))))
 
-with open("testFile.txt") as file:
+
+def printm(m):
+    for i in m:
+        print(i)
+
+
+def main():
+    menu()
+
+
+# function that processes all data from new file
+def new_file():
+    print("New file func")
+
+
+# Function that prints statistics for a specific product
+def product_stat():
+    print("Product stat")
+
+
+# Function that prints statistics for a specific AFM
+def afm_stat():
+    print("AFM stat")
+
+
+# Choose the right function given user input
+def menu_choice(choice):
+    if choice == "1":
+        new_file()
+    elif choice == "2":
+        product_stat()
+    elif choice == "3":
+        afm_stat()
+    elif choice == "4":
+        # Exit choice
+        sys.exit(9)
+    else:
+        print("Invalid menu choice")
+    # ????? Prints menu repeatedly
+    menu()
+
+
+# Our main menu
+def menu():
+    print()
+    print(
+        '''Give your preference:
+        1: Read new input file
+        2: Print statistics for a specific product
+        3: Print statistics for a specific AFM
+        4: Exit the program
+        '''
+    )
+
+    choice = input()
+    menu_choice(choice)
+
+
+with open("receiptFile.txt") as file:
     fr = fileReader(file)
     printm(fr.next(-1))
     # while (receipt := fr.next(10)):
     #     print(receipt)
 
 
+# if __name__== "__main__" :main()
 # program execution starts here
-main()
