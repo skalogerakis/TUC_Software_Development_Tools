@@ -1,6 +1,7 @@
 import sys  # sys.exit to quit application
 import re
 import time
+import math
 
 
 class fileReader:
@@ -78,7 +79,8 @@ class fileReader:
 		data = {}
 		sum = 0
 		for match in DataMatch[1]:
-			name = match[0].lower()
+			name = match[0].upper()
+			#TODO somewhere here loses in decimal
 			flmatch = list(map(lambda x: float(x), match[1:]))
 			if flmatch[2] != round(flmatch[0] * flmatch[1], 2): return None
 			sum += flmatch[2]
@@ -86,7 +88,8 @@ class fileReader:
 				data[name] += flmatch[2]
 			else:
 				data[name] = flmatch[2]
-		if DataMatch[2] != sum: return None
+		# Add some tolerance to the comparison to avoid errors due to float calculation
+		if not math.isclose(DataMatch[2], sum, abs_tol=0.00003): return None
 		DataMatch[1] = data
 		return DataMatch
 
@@ -158,9 +161,9 @@ def new_file():
 # Function that prints statistics for a specific product
 def product_stat():
 	print("Enter Product Name:")
-	choice = input().lower()
+	choice = input().upper()
 	if not ProductDict.get(choice): return
-	for key, value in sorted(ProductDict[choice].items(), key=lambda item: item[1], reverse=True):
+	for key, value in sorted(ProductDict[choice].items(), key=lambda item: (item[0],item[1]), reverse=False):
 		print("%s: %s" % (key, round(value, 2)))
 
 
@@ -169,7 +172,8 @@ def afm_stat():
 	print("Enter AFM:")
 	choice = input()
 	if not AFMDict.get(choice): return
-	for key, value in sorted(AFMDict[choice].items(), key=lambda item: item[1], reverse=True):
+	#TODO MUST WATCH AGAIN
+	for key, value in sorted(AFMDict[choice].items(), key=lambda item: (item[0],item[1]), reverse=False):
 		print("%s: %s" % (key, round(value, 2)))
 
 
@@ -186,7 +190,6 @@ def menu_choice(choice):
 		sys.exit(9)
 	else:
 		print("Invalid menu choice")
-	# ????? Prints menu repeatedly
 	menu()
 
 
