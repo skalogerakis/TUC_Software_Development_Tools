@@ -80,7 +80,7 @@ class fileReader:
 		sum = 0
 		for match in DataMatch[1]:
 			name = match[0].upper()
-			#TODO somewhere here loses in decimal
+			# TODO somewhere here loses in decimal
 			flmatch = list(map(lambda x: float(x), match[1:]))
 			if flmatch[2] != round(flmatch[0] * flmatch[1], 2): return None
 			sum += flmatch[2]
@@ -89,7 +89,7 @@ class fileReader:
 			else:
 				data[name] = flmatch[2]
 		# Add some tolerance to the comparison to avoid errors due to float calculation
-		if not math.isclose(DataMatch[2], sum, abs_tol=0.00003): return None
+		if not math.isclose(DataMatch[2], sum, abs_tol=0.001): return None
 		DataMatch[1] = data
 		return DataMatch
 
@@ -163,8 +163,8 @@ def product_stat():
 	print("Enter Product Name:")
 	choice = input().upper()
 	if not ProductDict.get(choice): return
-	for key, value in sorted(ProductDict[choice].items(), key=lambda item: (item[0],item[1]), reverse=False):
-		print("%s: %s" % (key, round(value, 2)))
+	for key, value in sorted(ProductDict[choice].items(), key=lambda item: (item[0], item[1]), reverse=False):
+		print("%s %.2f" % (key, round(value, 2)))
 
 
 # Function that prints statistics for a specific product ONLY IN CASE OF VERY LARGE FILE(In this case we dont create two
@@ -185,8 +185,7 @@ def product_stat_BIGFILE():
 				valUpdater += AFMDict[key].get(val)
 
 		if flag == 0: continue
-		print("%s: %s" % (key, round(valUpdater, 2)))
-
+		print("%s: %.2f" % (key, round(valUpdater, 2)))
 
 
 # Function that prints statistics for a specific AFM
@@ -194,9 +193,9 @@ def afm_stat():
 	print("Enter AFM:")
 	choice = input()
 	if not AFMDict.get(choice): return
-	#TODO MUST WATCH AGAIN
-	for key, value in sorted(AFMDict[choice].items(), key=lambda item: (item[0],item[1]), reverse=False):
-		print("%s: %s" % (key, round(value, 2)))
+	# TODO MUST WATCH AGAIN
+	for key, value in sorted(AFMDict[choice].items(), key=lambda item: (item[0], item[1]), reverse=False):
+		print("%s %.2f" % (key, round(value, 2)))
 
 
 # Choose the right function given user input
