@@ -132,9 +132,8 @@ def new_file():
 	choice = input()
 	try:
 		with open(choice) as file:
-			start = time.time()
+
 			fr = fileReader(file)
-			# fr.next(-1)
 			while (True):
 				receipts = fr.next(-1)
 				if not receipts: break
@@ -145,7 +144,7 @@ def new_file():
 					else:
 						AFMDict[receipt[0]] = receipt[1]
 					# Populate Product Dict
-					tempProdDict = {}
+
 					for k, v in receipt[1].items():
 						if ProductDict.get(k):
 							if ProductDict[k].get(receipt[0]):
@@ -166,26 +165,28 @@ def product_stat():
 	for key, value in sorted(ProductDict[choice].items(), key=lambda item: (item[0], item[1]), reverse=False):
 		print("%s %.2f" % (key, round(value, 2)))
 
-
-# Function that prints statistics for a specific product ONLY IN CASE OF VERY LARGE FILE(In this case we dont create two
-# different dictionaries to prevent memory issues. The dictionary left has as key AFM, so in order to find our result
-# we search through all the values. This leads on large complexity and slow run time as we need to parse the whole
-# dictionary but it will not fail during execution)
-def product_stat_BIGFILE():
-	print("Enter Product Name:")
-	choice = input().upper()
-
-	for key, values in AFMDict.items():
-		# for base_key in AFMDict.keys():
-		valUpdater = 0;
-		flag = 0;
-		for val in values:
-			if val == choice:
-				flag = 1;
-				valUpdater += AFMDict[key].get(val)
-
-		if flag == 0: continue
-		print("%s: %.2f" % (key, round(valUpdater, 2)))
+'''
+	NOT USED.Function that prints statistics for a specific product ONLY IN CASE OF VERY LARGE FILE(In this case we dont 
+	create two different dictionaries to prevent memory issues. The dictionary left has as key AFM, so in order to find 
+	our result we search through all the values. This leads on large complexity and slow run time as we need to parse 
+	the whole dictionary but it will not fail during execution). This function could substitute product_stat and
+	no second dictionary would be demanded
+'''
+# def product_stat_BIGFILE():
+# 	print("Enter Product Name:")
+# 	choice = input().upper()
+#
+# 	for key, values in AFMDict.items():
+# 		# for base_key in AFMDict.keys():
+# 		valUpdater = 0;
+# 		flag = 0;
+# 		for val in values:
+# 			if val == choice:
+# 				flag = 1;
+# 				valUpdater += AFMDict[key].get(val)
+#
+# 		if flag == 0: continue
+# 		print("%s: %.2f" % (key, round(valUpdater, 2)))
 
 
 # Function that prints statistics for a specific AFM
@@ -193,7 +194,6 @@ def afm_stat():
 	print("Enter AFM:")
 	choice = input()
 	if not AFMDict.get(choice): return
-	# TODO MUST WATCH AGAIN
 	for key, value in sorted(AFMDict[choice].items(), key=lambda item: (item[0], item[1]), reverse=False):
 		print("%s %.2f" % (key, round(value, 2)))
 
