@@ -93,7 +93,7 @@ class fileReader:
 		DataMatch[1] = data
 		return DataMatch
 
-	def next(self, step=1000):
+	def next(self, step=100):
 		'''
 		Returns next receipts from files
 		:param step: number of receipts to read, -1 for all receipts of file
@@ -135,7 +135,7 @@ def new_file():
 
 			fr = fileReader(file)
 			while (True):
-				receipts = fr.next(-1)
+				receipts = fr.next()
 				if not receipts: break
 				for receipt in receipts:
 					# Populate AFM Dict
