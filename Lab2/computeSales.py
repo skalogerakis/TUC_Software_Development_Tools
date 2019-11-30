@@ -51,7 +51,7 @@ class fileReader:
 		matches = []
 		for c in chunks:
 			x = re.match(
-				"ΑΦΜ[ \t]*:[ \t]*([0-9]{10})\n(([\sα-ωΑ-Ωa-zA-Z]+:[ \t]*[0-9]+[ \t]+[0-9]+[.[0-9]+]?[ \t]+[0-9]+[.[0-9]+]?\n)+)[α-ω Α-Ω]+[ \t]*:[ \t]*([0-9]+[.[0-9]+]?)",
+				"ΑΦΜ[ \t]*:[ \t]*([0-9]{10})\n(([ \t]*[\sα-ωΑ-Ωa-zA-Z]+[ \t]*:[ \t]*[0-9]+[ \t]+[0-9]+[.[0-9]+]?[ \t]+[0-9]+[.[0-9]+]?\n)+)[α-ω Α-Ω]+[ \t]*:[ \t]*([0-9]+[.[0-9]+]?)",
 				c)
 			if x != None: matches.append(x.groups())
 		return matches
@@ -66,7 +66,7 @@ class fileReader:
 		AFM = match[0]
 		Total = float(match[3])
 		DataMatch = re.findall(
-			"([\sα-ωΑ-Ωa-zA-Z]+):[ \t]*([0-9])+[ \t]+([0-9]+[.[0-9]+]?)[ \t]+([0-9]+[.[0-9]+]?)[ \t]*\n", match[1])
+			"[ \t]*([\sα-ωΑ-Ωa-zA-Z]+?)[ \t]*:[ \t]*([0-9])+[ \t]+([0-9]+[.[0-9]+]?)[ \t]+([0-9]+[.[0-9]+]?)[ \t]*\n", match[1])
 		return [AFM, DataMatch, Total]
 
 	def __parseDataMatch(self, DataMatch):
