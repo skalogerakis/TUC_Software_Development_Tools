@@ -21,8 +21,9 @@ class fileReader:
 		Reads file and returns a single receipt as String
 		'''
 		buffer = ''
+		eof = False
 		for line in self.file:
-			if (re.fullmatch('[-]+\n', line)): return buffer;
+			if (re.fullmatch('[-]+\n', line)): return buffer
 			buffer += line
 		return None
 
@@ -33,13 +34,13 @@ class fileReader:
 		:return: list of raw receipts as strings
 		'''
 		chunks = []
-		while (True):
+		while (len(chunks) < step or step == -1):
 
 			chunk = self.__fileBuffer()
-			if chunk == None or (len(chunks) >= step and step != -1): break
+			if chunk == None : return chunks, True
 
 			chunks.append(chunk)
-		return chunks
+		return chunks , False
 
 	def __parseChunks(self, chunks):
 		'''
@@ -66,7 +67,8 @@ class fileReader:
 		AFM = match[0]
 		Total = float(match[3])
 		DataMatch = re.findall(
-			"[ \t]*([\sα-ωΑ-Ωa-zA-Z]+?)[ \t]*:[ \t]*([0-9])+[ \t]+([0-9]+[.[0-9]+]?)[ \t]+([0-9]+[.[0-9]+]?)[ \t]*\n", match[1])
+			"[ \t]*([\sα-ωΑ-Ωa-zA-Z]+?)[ \t]*:[ \t]*([0-9])+[ \t]+([0-9]+[.[0-9]+]?)[ \t]+([0-9]+[.[0-9]+]?)[ \t]*\n",
+			match[1])
 		return [AFM, DataMatch, Total]
 
 	def __parseDataMatch(self, DataMatch):
@@ -80,9 +82,8 @@ class fileReader:
 		sum = 0
 		for match in DataMatch[1]:
 			name = match[0].upper()
-			# TODO somewhere here loses in decimal
 			flmatch = list(map(lambda x: float(x), match[1:]))
-			if flmatch[2] != round(flmatch[0] * flmatch[1], 2): return None
+			if not math.isclose(flmatch[2], round(flmatch[0] * flmatch[1], 2), abs_tol=0.001): return None
 			sum += flmatch[2]
 			if data.get(name):
 				data[name] += flmatch[2]
@@ -99,13 +100,14 @@ class fileReader:
 		:param step: number of receipts to read, -1 for all receipts of file
 		:return: parsed receipts
 		'''
-		matches = self.__parseChunks(self.__readFile(step))
-		if matches.__len__() == 0: return None;
-		return list(filter(None, list(map(lambda x: self.__parseDataMatch(self.__parseMatch(x)), matches))))
+		chunks, eof = self.__readFile(step)
+		matches = self.__parseChunks(chunks)
+		if matches.__len__() == 0: return None, eof;
+		return list(filter(None, list(map(lambda x: self.__parseDataMatch(self.__parseMatch(x)), matches)))), eof
 
 
 def mergeDict(dict1, dict2):
-	''' Merge dictionaries and sum values of common keys in list'''
+	''' Merge dictionaries and sum values of common keys'''
 	dict3 = {**dict1, **dict2}
 	for key, value in dict3.items():
 		if key in dict1 and key in dict2:
@@ -134,9 +136,10 @@ def new_file():
 		with open(choice) as file:
 
 			fr = fileReader(file)
-			while (True):
-				receipts = fr.next()
-				if not receipts: break
+			eof = False
+			while (not eof):
+				receipts, eof = fr.next()
+				if receipts is None: continue
 				for receipt in receipts:
 					# Populate AFM Dict
 					if AFMDict.get(receipt[0]):
@@ -164,6 +167,7 @@ def product_stat():
 	if not ProductDict.get(choice): return
 	for key, value in sorted(ProductDict[choice].items(), key=lambda item: (item[0], item[1]), reverse=False):
 		print("%s %.2f" % (key, round(value, 2)))
+
 
 '''
 	NOT USED.Function that prints statistics for a specific product ONLY IN CASE OF VERY LARGE FILE(In this case we dont 
@@ -216,9 +220,8 @@ def menu_choice(choice):
 
 # Our main menu
 def menu():
-	print()
 	print(
-		"Give your preference: (1: read new input file, 2: print statistics for a specific product, 3: print statistics for a specific AFM, 4: exit the program)")
+		"\nGive your preference: (1: read new input file, 2: print statistics for a specific product, 3: print statistics for a specific AFM, 4: exit the program)")
 	choice = input()
 	menu_choice(choice)
 
